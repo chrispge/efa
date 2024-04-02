@@ -34,19 +34,19 @@ class EFADay:
             return False
 
     def __ne__(self, other):
-        return self.date != other.date
+        return self.date != other
 
     def __lt__(self, other):
-        return self.date < other.date
+        return self.date < other
 
     def __le__(self, other):
-        return self.date <= other.date
+        return self.date <= other
 
     def __gt__(self, other):
-        return self.date > other.date
+        return self.date > other
 
     def __ge__(self, other):
-        return self.date >= other.date
+        return self.date >= other
 
     def __hash__(self):
         return hash(self.date)

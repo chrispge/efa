@@ -35,7 +35,7 @@ def test__eq__():
     assert efa_day1 == efa_day2
 
 def test_not__eq__():
-    # Create two EFADay objects with the same date
+    # Compare an EFADay object with a date object
     efa_day1 = EFADay("2022-01-01")
     efa_day2 = dt.date(2022, 1, 1)
 
