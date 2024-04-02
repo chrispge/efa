@@ -2,6 +2,10 @@ import datetime as dt
 import pytest
 from efa.efaday import EFADay
 
+def test_import_efaday():
+    # Check that the EFADay class can be imported
+    from efa import EFADay
+
 def test_init_date_string():
     # Create an EFADay object with a date string
     efa_day = EFADay("2022-01-01")
