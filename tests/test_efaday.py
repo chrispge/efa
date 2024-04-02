@@ -27,6 +27,104 @@ def test__repr__():
     assert repr(efa_day) == "EFADay('2022-01-01')"
     assert eval(repr(efa_day)) == efa_day
 
+def test__eq__():
+    # Create two EFADay objects with the same date
+    efa_day1 = EFADay("2022-01-01")
+    efa_day2 = EFADay("2022-01-01")
+
+    assert efa_day1 == efa_day2
+
+def test_not__eq__():
+    # Create two EFADay objects with the same date
+    efa_day1 = EFADay("2022-01-01")
+    efa_day2 = dt.date(2022, 1, 1)
+
+    assert not efa_day1 == efa_day2
+
+def test__ne__():
+    # Create two EFADay objects with different dates
+    efa_day1 = EFADay("2022-01-01")
+    efa_day2 = EFADay("2022-01-02")
+
+    assert efa_day1 != efa_day2
+
+def test_not__ne__():
+    # Create two EFADay objects with the same date
+    efa_day1 = EFADay("2022-01-01")
+    efa_day2 = EFADay("2022-01-01")
+
+    assert not efa_day1 != efa_day2
+
+def test__lt__():
+    # Create two EFADay objects with different dates
+    efa_day1 = EFADay("2022-01-01")
+    efa_day2 = EFADay("2022-01-02")
+
+    assert efa_day1 < efa_day2
+
+def test_not__lt__():
+    # Create two EFADay objects with the same date
+    efa_day1 = EFADay("2022-01-01")
+    efa_day2 = EFADay("2022-01-01")
+
+    assert not efa_day1 < efa_day2
+
+def test__le__():
+    # Create two EFADay objects with the same date
+    efa_day1 = EFADay("2022-01-01")
+    efa_day2 = EFADay("2022-01-01")
+
+    assert efa_day1 <= efa_day2
+
+def test_not__le__():
+    # Create two EFADay objects with different dates
+    efa_day1 = EFADay("2022-01-01")
+    efa_day2 = EFADay("2022-01-02")
+
+    assert not efa_day2 <= efa_day1
+
+def test__gt__():
+    # Create two EFADay objects with different dates
+    efa_day1 = EFADay("2022-01-01")
+    efa_day2 = EFADay("2022-01-02")
+
+    assert efa_day2 > efa_day1
+
+def test_not__gt__():
+    # Create two EFADay objects with the same date
+    efa_day1 = EFADay("2022-01-01")
+    efa_day2 = EFADay("2022-01-01")
+
+    assert not efa_day1 > efa_day2
+
+def test__ge__():
+    # Create two EFADay objects with the same date
+    efa_day1 = EFADay("2022-01-01")
+    efa_day2 = EFADay("2022-01-01")
+
+    assert efa_day1 >= efa_day2
+
+def test_not__ge__():
+    # Create two EFADay objects with different dates
+    efa_day1 = EFADay("2022-01-01")
+    efa_day2 = EFADay("2022-01-02")
+
+    assert not efa_day1 >= efa_day2
+
+def test__hash__():
+    # Create an EFADay object
+    efa_day1 = EFADay("2022-01-01")
+    efa_day2 = EFADay("2022-01-01")
+
+    assert hash(efa_day1) == hash(efa_day2)
+
+def test_not__hash__():
+    # Create two EFADay objects with different dates
+    efa_day1 = EFADay("2022-01-01")
+    efa_day2 = EFADay("2022-01-02")
+
+    assert hash(efa_day1) != hash(efa_day2)
+
 def test_start_time_winter_day():
     # Create an EFADay object for a winter day
     efa_day = EFADay("2022-01-01")

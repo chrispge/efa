@@ -28,7 +28,10 @@ class EFADay:
         return f"EFADay('{self.date.strftime('%Y-%m-%d')}')"
 
     def __eq__(self, other):
-        return (self.date == other.date)
+        try:
+            return (self.date == other.date) & (self.__class__ == other.__class__)
+        except AttributeError:
+            return False
 
     def __ne__(self, other):
         return self.date != other.date
@@ -48,35 +51,6 @@ class EFADay:
     def __hash__(self):
         return hash(self.date)
 
-    def __add__(self, days: int):
-        return EFA((dt.datetime.strptime(self.date, "%Y-%m-%d") + dt.timedelta(days=days)).strftime("%Y-%m-%d"))
-
-    def __sub__(self, days: int):
-        return EFA((dt.datetime.strptime(self.date, "%Y-%m-%d") - dt.timedelta(days=days)).strftime("%Y-%m-%d"))
-
-    def __radd__(self, days: int):
-        return EFA((dt.datetime.strptime(self.date, "%Y-%m-%d") + dt.timedelta(days=days)).strftime("%Y-%m-%d"))
-
-    def __rsub__(self, days: int):
-        return EFA((dt.datetime.strptime(self.date, "%Y-%m-%d") - dt.timedelta(days=days)).strftime("%Y-%m-%d"))
-
-    def __iter__(self):
-        return self
-
-    def __next__(self):
-        return self.date
-
-    def __getitem__(self, index: int):
-        return self.date[index]
-
-    def __len__(self):
-        return len(self.date)
-
-    def __contains__(self, item: str):
-        return item in self.date
-
-    def __reversed__(self):
-        return EFA(self.date[::-1])
 
     @property
     def start_time(self) -> dt.datetime:
