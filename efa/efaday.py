@@ -22,13 +22,13 @@ class EFADay:
             self.date = date
 
     def __str__(self):
-        return f"EFA {self.date.strftime('%Y-%m-%d')}"
+        return self.date.strftime('%Y-%m-%d')
 
     def __repr__(self):
-        return f"EFA {self.date.strftime('%Y-%m-%d')}"
+        return f"EFADay('{self.date.strftime('%Y-%m-%d')}')"
 
     def __eq__(self, other):
-        return self.date == other.date
+        return (self.date == other.date)
 
     def __ne__(self, other):
         return self.date != other.date

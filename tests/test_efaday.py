@@ -14,6 +14,19 @@ def test_init_date_object():
 
     assert efa_day.date == dt.date(2022, 1, 1)
 
+def test__str__():
+    # Create an EFADay object
+    efa_day = EFADay("2022-01-01")
+
+    assert str(efa_day) == "2022-01-01"
+
+def test__repr__():
+    # Create an EFADay object
+    efa_day = EFADay("2022-01-01")
+
+    assert repr(efa_day) == "EFADay('2022-01-01')"
+    assert eval(repr(efa_day)) == efa_day
+
 def test_start_time_winter_day():
     # Create an EFADay object for a winter day
     efa_day = EFADay("2022-01-01")
