@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "efa"
+version = "0.1.0"
+description = "Classes for convenience dealing with EFA dates and settlement periods."
+authors = ["Chris Page <cjpage@me.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+pytest = "^8.1.1"
+pandas = "^2.2.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
