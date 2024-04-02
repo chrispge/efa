@@ -18,8 +18,11 @@ class EFADay:
         try:
             self.date = dt.datetime.strptime(date, "%Y-%m-%d").date()
         except TypeError:
-            assert isinstance(date, dt.date)
-            self.date = date
+            assert isinstance(date, dt.date) | isinstance(date, self.__class__)
+            if isinstance(date, self.__class__):
+                self.date = date.date
+            if isinstance(date, dt.date):
+                self.date = date
 
     def __str__(self):
         return self.date.strftime('%Y-%m-%d')

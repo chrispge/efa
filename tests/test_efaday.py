@@ -18,6 +18,13 @@ def test_init_date_object():
 
     assert efa_day.date == dt.date(2022, 1, 1)
 
+def test_init_efa_day():
+    # Create an EFADay object with another EFADay object
+    efa_day1 = EFADay("2022-01-01")
+    efa_day2 = EFADay(efa_day1)
+
+    assert efa_day1 == efa_day2
+
 def test__str__():
     # Create an EFADay object
     efa_day = EFADay("2022-01-01")
