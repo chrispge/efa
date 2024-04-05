@@ -185,4 +185,25 @@ def test_end_time_summer_clock_change_day():
 
     assert efa_day.end_time == dt.datetime(2022, 3, 27, 22, 0, 0, tzinfo=dt.timezone.utc)
 
+def test_gas_day_winter():
+    # Create an EFADay object for a gas day
+    efa_day = EFADay("2022-01-01")
 
+    assert efa_day.gas_day== dt.datetime(2022, 1, 1, 6, 0, 0, tzinfo=dt.timezone.utc)
+
+
+def test_gas_day_summer():
+    # Create an EFADay object for a gas day
+    efa_day = EFADay("2022-06-01")
+
+    assert efa_day.gas_day== dt.datetime(2022, 6, 1, 5, 0, 0, tzinfo=dt.timezone.utc)
+
+def test_end_time_winter_clock_change_day():
+    efa_day = EFADay("2022-10-30")
+
+    assert efa_day.gas_day == dt.datetime(2022, 10, 30, 6, 0, 0, tzinfo=dt.timezone.utc)
+
+def test_end_time_summer_clock_change_day():
+    efa_day = EFADay("2022-03-27")
+
+    assert efa_day.gas_day == dt.datetime(2022, 3, 27, 5, 0, 0, tzinfo=dt.timezone.utc)

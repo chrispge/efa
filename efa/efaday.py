@@ -69,3 +69,8 @@ class EFADay:
         max_sp = helpers.max_sp(self.date)
         end_time = helpers.utc_from_sp(self.date, max_sp-1)
         return end_time
+
+    @property
+    def gas_day(self) -> dt.datetime:
+        """Returns the gas day bounday of the EFA day."""
+        return self.end_time - dt.timedelta(hours=17)
