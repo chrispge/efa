@@ -3,7 +3,6 @@ from efa import helpers
 from typing import Union
 
 
-
 class EFADay:
     def __init__(self, date: Union[dt.date, str]) -> None:
         """Initialises an EFADay object for a given date.
@@ -25,7 +24,7 @@ class EFADay:
                 self.date = date
 
     def __str__(self):
-        return self.date.strftime('%Y-%m-%d')
+        return self.date.strftime("%Y-%m-%d")
 
     def __repr__(self):
         return f"EFADay('{self.date.strftime('%Y-%m-%d')}')"
@@ -54,21 +53,25 @@ class EFADay:
     def __hash__(self):
         return hash(self.date)
 
-
     @property
     def start_time(self) -> dt.datetime:
         """Returns UTC start time of the EFA day."""
         _prev_date = self.date - dt.timedelta(days=1)
         max_sp = helpers.max_sp(_prev_date)
-        start_time = helpers.utc_from_sp(_prev_date, max_sp-1)
+        start_time = helpers.utc_from_sp(_prev_date, max_sp - 1)
         return start_time
 
     @property
     def end_time(self) -> dt.datetime:
         """Returns UTC end time of the EFA day."""
         max_sp = helpers.max_sp(self.date)
-        end_time = helpers.utc_from_sp(self.date, max_sp-1)
+        end_time = helpers.utc_from_sp(self.date, max_sp - 1)
         return end_time
+
+    @property
+    def last_sp_start_time(self) -> dt.datetime:
+        """Returns the last start time of the EFA day i.e. 22:30 local time"""
+        return self.end_time - dt.timedelta(minutes=30)
 
     @property
     def gas_day(self) -> dt.datetime:
