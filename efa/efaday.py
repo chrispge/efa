@@ -53,6 +53,20 @@ class EFADay:
     def __hash__(self):
         return hash(self.date)
 
+    def __add__(self, days: int):
+        try:
+            assert isinstance(days, int)
+        except AssertionError:
+            raise TypeError("Only integer values can be added to an EFADay object")
+        return EFADay(self.date + dt.timedelta(days=days))
+
+    def __sub__(self, days: int):
+        try:
+            assert isinstance(days, int)
+        except AssertionError:
+            raise TypeError("Only integer values can be added to an EFADay object")
+        return EFADay(self.date - dt.timedelta(days=days))
+
     @property
     def start_time(self) -> dt.datetime:
         """Returns UTC start time of the EFA day."""
