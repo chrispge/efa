@@ -91,3 +91,11 @@ class EFADay:
     def gas_day(self) -> dt.datetime:
         """Returns the gas day bounday of the EFA day."""
         return self.end_time - dt.timedelta(hours=17)
+
+    def from_period_start_time(start_time: dt.datetime) -> int:
+        """Returns an EFA Day corresponding to a given utc start time."""
+        settlement_date, sp = helpers.sp_from_timestamp(start_time)
+        if sp <= 46:
+            return EFADay(settlement_date)
+        else:
+            return EFADay(settlement_date) + 1
