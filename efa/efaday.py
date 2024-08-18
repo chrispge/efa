@@ -1,6 +1,7 @@
 import datetime as dt
-from efa import helpers
 from typing import Union
+
+from efa import helpers
 
 
 class EFADay:
