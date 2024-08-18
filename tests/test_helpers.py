@@ -3,6 +3,7 @@ from efa import helpers
 import pandas as pd
 import pytz
 
+
 @pytest.mark.parametrize(
     "date",
     [
@@ -689,6 +690,7 @@ def test_utc_from_settlement_date_short_day():
     with pytest.raises(Exception):
         print(helpers.utc_from_sp(settlement_date, 47))
 
+
 def test_utc_from_sp_vectorised():
     df = pd.DataFrame(
         {
@@ -696,10 +698,12 @@ def test_utc_from_sp_vectorised():
             "sp": [1, 2, 3],
         }
     )
-    df["expected"] = df.apply(lambda x: helpers.utc_from_sp(x["settlement_date"], x["sp"]), axis=1)
+    df["expected"] = df.apply(
+        lambda x: helpers.utc_from_sp(x["settlement_date"], x["sp"]), axis=1
+    )
     print(df.expected)
     print(type(df.expected))
-    result = helpers.utc_from_sp(df["settlement_date"], df["sp"])
+    result = helpers.utc_from_sp_vectorised(df["settlement_date"], df["sp"])
     print(result)
     print(type(result))
     assert df.expected.to_list() == result.to_list()
@@ -1737,5 +1741,3 @@ def test_sp_from_timestamp_winter_tz_naive(settlement_date):
     assert helpers.sp_from_timestamp(naive) == helpers.sp_from_timestamp(
         naive.tz_localize("Europe/London")
     )
-
-

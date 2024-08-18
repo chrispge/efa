@@ -290,20 +290,24 @@ def test_end_time_summer_clock_change_day():
 
     assert efa_day.gas_day == dt.datetime(2022, 3, 27, 5, 0, 0, tzinfo=dt.timezone.utc)
 
+
 def test__add__():
     efa_date = EFADay("2022-01-01")
     result = efa_date + 1
     assert result == EFADay("2022-01-02")
+
 
 def test__sub__():
     efa_date = EFADay("2022-01-01")
     result = efa_date - 1
     assert result == EFADay("2021-12-31")
 
+
 def test__add__non_int():
     efa_date = EFADay("2022-01-01")
     with pytest.raises(TypeError):
         efa_date + 3.14
+
 
 def test_from_period_start_time_winter():
     start_time = dt.datetime(2022, 1, 1, 0, 0, 0, tzinfo=dt.timezone.utc)
@@ -325,6 +329,7 @@ def test_from_period_start_time_winter():
     start_time = dt.datetime(2022, 1, 1, 23, 30, 0, tzinfo=dt.timezone.utc)
     result = EFADay.from_period_start_time(start_time)
     assert result == EFADay("2022-01-02")
+
 
 def test_from_period_start_time_summer():
     start_time = dt.datetime(2022, 6, 1, 0, 0, 0, tzinfo=dt.timezone.utc)
