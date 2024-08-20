@@ -692,25 +692,6 @@ def test_utc_from_settlement_date_short_day():
         print(helpers.utc_from_sp(settlement_date, 47))
 
 
-def test_utc_from_sp_vectorised():
-    df = pd.DataFrame(
-        {
-            "settlement_date": ["2021-03-01", "2021-03-01", "2021-03-01"],
-            "sp": [1, 2, 3],
-        }
-    )
-    df["expected"] = df.apply(
-        lambda x: helpers.utc_from_sp(x["settlement_date"], x["sp"]), axis=1
-    )
-    print(df.expected)
-    print(type(df.expected))
-    result = helpers.utc_from_sp_vectorised(df["settlement_date"], df["sp"])
-    print(result)
-    print(type(result))
-    assert df.expected.to_list() == result.to_list()
-    pd.testing.assert_series_equal(df.expected, result, check_names=False)
-
-
 def test_sp_from_timestamp_winter_london():
     """If the timestamp is given in London time,
     always expect settlement period to follow same convention.

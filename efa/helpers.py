@@ -71,48 +71,6 @@ def utc_from_sp(
     return midnight_utc + time_delta
 
 
-def utc_from_sp_vectorised(settlement_date: pd.Series, settlement_period: pd.Series):
-    """Returns utc start time for settlement date / period combination
-
-    Vectorised version of utc_from_sp
-
-    Parameters
-    ----------
-
-    settlement_date : Series of date-like values
-        Date of the settlement period
-
-    settlement_period : Series of integer values
-        Settlement period
-
-    Returns
-    -------
-
-    pd.Timestamp or pd.Series, depending on input
-
-    Notes
-    -----
-
-    Currently this function does NOT validate the input i.e. that the settlement period is valid for
-    the given date. This is done in the non-vectorised version of this function.
-
-    To fix this would require a vectorised version of max_sp, which in tern would require vectorised
-    versions of is_long_day and is_short_day.
-
-    See Also
-    --------
-
-    utc_from_sp
-
-    """
-
-    # assert settlement_period <= max_sp(settlement_date)
-    midnight_local = pd.to_datetime(settlement_date).dt.tz_localize("Europe/London")
-    midnight_utc = midnight_local.dt.tz_convert("UTC")
-    time_delta = pd.to_timedelta((settlement_period - 1) / 2, unit="hours")
-    return midnight_utc + time_delta
-
-
 def sp_from_timestamp(timestamp):
     """returns settlement period corresponding to a given time
 
