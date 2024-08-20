@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "efa"
-version = "0.1.1"
+version = "0.2.1"
 description = "Classes for convenience dealing with EFA dates and settlement periods."
 authors = ["Chris Page <cjpage@me.com>"]
 readme = "README.rst"
