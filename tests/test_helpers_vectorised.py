@@ -3,7 +3,7 @@ import pandas as pd
 import pytest
 import pytz
 
-from efa import vhelpers
+from efa import helpers
 
 
 def test_is_short_day_true():
@@ -18,7 +18,7 @@ def test_is_short_day_true():
         ],
         name="date",
     )
-    result = vhelpers.is_short_day(dates)
+    result = helpers.vectorised.is_short_day(dates)
     assert result.all()
     assert type(result) == np.ndarray
 
@@ -40,7 +40,7 @@ def test_is_short_day_false():
         ],
         name="date",
     )
-    result = vhelpers.is_short_day(dates)
+    result = helpers.vectorised.is_short_day(dates)
     assert not result.any()
     assert type(result) == np.ndarray
 
@@ -56,7 +56,7 @@ def test_is_long_day_true():
         ],
         name="date",
     )
-    result = vhelpers.is_long_day(dates)
+    result = helpers.vectorised.is_long_day(dates)
     assert result.all()
 
 
@@ -77,7 +77,7 @@ def test_is_long_day_false():
         ],
         name="date",
     )
-    result = vhelpers.is_long_day(dates)
+    result = helpers.vectorised.is_long_day(dates)
     assert not result.any()
 
 
@@ -94,7 +94,7 @@ def test_is_short_day_tz_aware_true():
         name="date",
         tz="CET",
     )
-    result = vhelpers.is_short_day(dates)
+    result = helpers.vectorised.is_short_day(dates)
     assert result.all()
 
 
@@ -116,7 +116,7 @@ def test_is_short_day_tz_aware_false():
         name="date",
         tz="CET",
     )
-    result = vhelpers.is_short_day(dates)
+    result = helpers.vectorised.is_short_day(dates)
     assert not result.any()
 
 
@@ -132,7 +132,7 @@ def test_is_long_day_tz_aware_true():
         name="date",
         tz="UTC",
     )
-    result = vhelpers.is_long_day(dates)
+    result = helpers.vectorised.is_long_day(dates)
     assert result.all()
 
 
@@ -154,7 +154,7 @@ def test_is_long_day_tz_aware_false():
         name="date",
         tz="UTC",
     )
-    result = vhelpers.is_long_day(dates)
+    result = helpers.vectorised.is_long_day(dates)
     assert not result.any()
 
 
@@ -220,7 +220,9 @@ def test_utc_from_sp_winter():
         ],
         tz="UTC",
     ).to_series()
-    result = vhelpers.utc_from_sp(df["settlement_date"], df["settlement_period"])
+    result = helpers.vectorised.utc_from_sp(
+        df["settlement_date"], df["settlement_period"]
+    )
     pd.testing.assert_series_equal(result, expected, check_index=False)
 
 
@@ -284,7 +286,9 @@ def test_utc_from_sp_summer():
         ],
         tz="UTC",
     ).to_series()
-    result = vhelpers.utc_from_sp(df["settlement_date"], df["settlement_period"])
+    result = helpers.vectorised.utc_from_sp(
+        df["settlement_date"], df["settlement_period"]
+    )
     pd.testing.assert_series_equal(result, expected, check_index=False)
 
 
@@ -298,7 +302,7 @@ def test_utc_from_settlement_date_long_day():
     expected = pd.date_range(
         "2020-10-24 23:00", periods=50, freq="30min", tz="UTC"
     ).to_series()
-    result = vhelpers.utc_from_sp(df.settlement_date, df.settlement_period)
+    result = helpers.vectorised.utc_from_sp(df.settlement_date, df.settlement_period)
     pd.testing.assert_series_equal(result, expected, check_index=False)
 
 
@@ -312,7 +316,7 @@ def test_utc_from_settlement_date_short_day():
     expected = pd.date_range(
         "2021-03-28 00:00", periods=46, freq="30min", tz="UTC"
     ).to_series()
-    result = vhelpers.utc_from_sp(df.settlement_date, df.settlement_period)
+    result = helpers.vectorised.utc_from_sp(df.settlement_date, df.settlement_period)
     pd.testing.assert_series_equal(result, expected, check_index=False)
 
 
@@ -326,7 +330,9 @@ def test_sp_from_timestamps_winter_utc():
     timestamps = pd.date_range(
         settlement_date, periods=48, freq="30min", tz="UTC"
     ).to_series()
-    settlement_dates, settlement_periods = vhelpers.sp_from_timestamps(timestamps)
+    settlement_dates, settlement_periods = helpers.vectorised.sp_from_timestamps(
+        timestamps
+    )
     expected_dates = pd.to_datetime(timestamps.dt.date)
     expected_periods = pd.Series(range(1, 49), index=timestamps.index)
     pd.testing.assert_series_equal(settlement_dates, expected_dates)
@@ -350,7 +356,9 @@ def test_sp_from_timestamps_summer_utc():
     timestamps = pd.date_range(
         settlement_date, periods=48, freq="30min", tz="UTC"
     ).to_series()
-    settlement_dates, settlement_periods = vhelpers.sp_from_timestamps(timestamps)
+    settlement_dates, settlement_periods = helpers.vectorised.sp_from_timestamps(
+        timestamps
+    )
     expected_dates = [settlement_date] * 46 + ["2023-06-02"] * 2
     expected_dates = pd.to_datetime(expected_dates).to_series(index=timestamps.index)
     expected_period_values = [(i + 2) % 48 + 1 for i in range(48)]
@@ -382,7 +390,9 @@ def test_sp_from_timestamps_summer_utc2():
     )
     expected_dates = pd.to_datetime(expected_dates)
     expected_periods = pd.Series(range(1, 49), index=expected_index)
-    settlement_dates, settlement_periods = vhelpers.sp_from_timestamps(timestamps)
+    settlement_dates, settlement_periods = helpers.vectorised.sp_from_timestamps(
+        timestamps
+    )
     pd.testing.assert_series_equal(settlement_dates, expected_dates, check_index=False)
     pd.testing.assert_series_equal(settlement_periods, expected_periods)
 
@@ -396,7 +406,9 @@ def test_sp_from_timestamps_long_day_utc():
     timestamps = pd.date_range(
         settlement_date, periods=50, freq="30min", tz="UTC"
     ).to_series()
-    settlement_dates, settlement_periods = vhelpers.sp_from_timestamps(timestamps)
+    settlement_dates, settlement_periods = helpers.vectorised.sp_from_timestamps(
+        timestamps
+    )
     expected_dates = pd.to_datetime(timestamps.dt.date)
     # settlement periods start at 3
     expected_period_values = [i % 50 + 1 for i in range(52)]
@@ -414,7 +426,9 @@ def test_sp_from_timestamps_short_day_utc():
     timestamps = pd.date_range(
         settlement_date, periods=46, freq="30min", tz="UTC"
     ).to_series()
-    settlement_dates, settlement_periods = vhelpers.sp_from_timestamps(timestamps)
+    settlement_dates, settlement_periods = helpers.vectorised.sp_from_timestamps(
+        timestamps
+    )
     expected_dates = pd.to_datetime(timestamps.dt.date)
     # settlement periods start at 3
     expected_period_values = [i % 46 + 1 for i in range(46)]
@@ -481,7 +495,7 @@ def test_sp_from_timestamp_strings():
             f"{settlement_date}T23:30+0000",
         ]
     )
-    settlement_dates, settlement_periods = vhelpers.sp_from_timestamps(
+    settlement_dates, settlement_periods = helpers.vectorised.sp_from_timestamps(
         timestamp_strings
     )
     expected_dates = pd.to_datetime(pd.Series([settlement_date_obj] * 48))
@@ -509,10 +523,10 @@ def test_sp_from_timestamps_winter_tz_naive(settlement_date):
     )
     london = naive.dt.tz_localize("Europe/London")
 
-    sd, sp = vhelpers.sp_from_timestamps(naive)
+    sd, sp = helpers.vectorised.sp_from_timestamps(naive)
 
-    naive_dates, naive_periods = vhelpers.sp_from_timestamps(naive)
-    london_dates, london_periods = vhelpers.sp_from_timestamps(london)
+    naive_dates, naive_periods = helpers.vectorised.sp_from_timestamps(naive)
+    london_dates, london_periods = helpers.vectorised.sp_from_timestamps(london)
 
     assert naive_dates.equals(london_dates)
     assert naive_periods.equals(london_periods)
@@ -539,7 +553,7 @@ def test_sp_from_timestamps_spring_clock_change_naive_raises_exception(settlemen
     )
 
     with pytest.raises(pytz.exceptions.NonExistentTimeError):
-        sd, sp = vhelpers.sp_from_timestamps(naive)
+        sd, sp = helpers.vectorised.sp_from_timestamps(naive)
 
 
 def test_sp_from_timestamp_summer_london():
@@ -569,13 +583,14 @@ def test_sp_from_timestamp_summer_london():
     )
     expected_dates = pd.to_datetime(expected_dates)
     expected_periods = pd.Series(range(1, 49), index=expected_index)
-    settlement_dates, settlement_periods = vhelpers.sp_from_timestamps(timestamps)
+    settlement_dates, settlement_periods = helpers.vectorised.sp_from_timestamps(
+        timestamps
+    )
     pd.testing.assert_series_equal(settlement_dates, expected_dates, check_index=False)
     pd.testing.assert_series_equal(settlement_periods, expected_periods)
 
 
-@pytest.mark.skip()
-def test_sp_from_timestamp_long_day_london():
+def test_sp_from_timestamps_long_day_london():
     """If the timestamp is given in London time,
     always expect settlement period to follow same convention.
 
@@ -593,16 +608,16 @@ def test_sp_from_timestamp_long_day_london():
     timestamps = pd.date_range(
         settlement_date, periods=50, freq="30min", tz="Europe/London"
     ).to_series()
-    settlement_dates, settlement_periods = vhelpers.sp_from_timestamps(timestamps)
+    settlement_dates, settlement_periods = helpers.vectorised.sp_from_timestamps(
+        timestamps
+    )
     expected_dates = pd.to_datetime(timestamps.dt.date)
-    # settlement periods start at 3
-    expected_period_values = [i % 50 + 1 for i in range(52)]
-    expected_periods = pd.Series(expected_period_values[2:], index=timestamps.index)
+    expected_periods = pd.Series(range(1, 51), index=timestamps.index)
     pd.testing.assert_series_equal(settlement_dates, expected_dates)
     pd.testing.assert_series_equal(settlement_periods, expected_periods)
 
 
-def test_sp_from_timestamp_short_day_london():
+def test_sp_from_timestamps_short_day_london():
     """If the timestamp is given in London time,
     always expect settlement period to follow same convention.
 
@@ -620,7 +635,9 @@ def test_sp_from_timestamp_short_day_london():
     timestamps = pd.date_range(
         settlement_date, periods=46, freq="30min", tz="Europe/London"
     ).to_series()
-    settlement_dates, settlement_periods = vhelpers.sp_from_timestamps(timestamps)
+    settlement_dates, settlement_periods = helpers.vectorised.sp_from_timestamps(
+        timestamps
+    )
     expected_dates = pd.to_datetime(timestamps.dt.date)
     # settlement periods start at 3
     expected_period_values = [i % 46 + 1 for i in range(46)]
