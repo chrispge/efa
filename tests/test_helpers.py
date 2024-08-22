@@ -1,3 +1,5 @@
+import datetime as dt
+
 import pandas as pd
 import pytest
 import pytz
@@ -1723,3 +1725,12 @@ def test_sp_from_timestamp_winter_tz_naive(settlement_date):
     assert helpers.sp_from_timestamp(naive) == helpers.sp_from_timestamp(
         naive.tz_localize("Europe/London")
     )
+
+
+def test_sp_from_timstamp_dtypes():
+    settlement_date, settlement_period = helpers.sp_from_timestamp(
+        "2021-03-01T00:00+0000"
+    )
+
+    assert type(settlement_date) == dt.date
+    assert type(settlement_period) == int

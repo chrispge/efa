@@ -12,12 +12,14 @@ Unreleased
 Added
 ~~~~~
 
-
 Changed
 ~~~~~~~
 
 Fixed
 ~~~~~
+
+- ensure helpers.sp_from_timestamp returns int for settlement period value
+
 
 0.2.1 - 2024-08-20
 ------------------

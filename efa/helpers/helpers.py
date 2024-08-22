@@ -90,5 +90,5 @@ def sp_from_timestamp(timestamp):
     settlement_date = london_timestamp.normalize()
     time_delta = london_timestamp - settlement_date
     half_hours = time_delta.total_seconds() / 1800
-    settlement_period = half_hours + 1
+    settlement_period = int(half_hours) + 1
     return settlement_date.date(), settlement_period
