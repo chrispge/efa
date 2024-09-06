@@ -1,6 +1,8 @@
 import datetime as dt
 from typing import Union
 
+import pandas as pd
+
 from efa import helpers
 
 
@@ -100,3 +102,9 @@ class EFADay:
             return EFADay(settlement_date)
         else:
             return EFADay(settlement_date) + 1
+
+    def start_time_index(self, freq: str = "30min") -> int:
+        """Returns the hourly index of the EFA day."""
+        return pd.date_range(
+            self.start_time, self.end_time, freq=freq, inclusive="left"
+        )

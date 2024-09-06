@@ -1,5 +1,6 @@
 import datetime as dt
 
+import pandas as pd
 import pytest
 
 from efa.efaday import EFADay
@@ -353,3 +354,48 @@ def test_from_period_start_time_summer():
     start_time = dt.datetime(2022, 6, 1, 23, 0, 0, tzinfo=dt.timezone.utc)
     result = EFADay.from_period_start_time(start_time)
     assert result == EFADay("2022-06-02")
+
+
+def test_hourly_index_winter():
+    efa_date = EFADay("2022-01-01")
+    result = efa_date.start_time_index("60min")
+    assert result[0] == pd.Timestamp("2021-12-31 23:00:00", tz="UTC")
+    assert result[-1] == pd.Timestamp("2022-01-01 22:00:00", tz="UTC")
+    assert len(result) == 24
+    assert result.is_monotonic_increasing
+
+
+def test_hourly_index_summer():
+    efa_date = EFADay("2022-06-01")
+    result = efa_date.start_time_index("60min")
+    assert result[0] == pd.Timestamp("2022-05-31 22:00:00", tz="UTC")
+    assert result[-1] == pd.Timestamp("2022-06-01 21:00:00", tz="UTC")
+    assert len(result) == 24
+    assert result.is_monotonic_increasing
+
+
+def test_hourly_index_spring_clock_change():
+    efa_date = EFADay("2022-03-27")
+    result = efa_date.start_time_index("60min")
+    assert result[0] == pd.Timestamp("2022-03-26 23:00:00", tz="UTC")
+    assert result[-1] == pd.Timestamp("2022-03-27 21:00:00", tz="UTC")
+    assert len(result) == 23
+    assert result.is_monotonic_increasing
+
+
+def test_hourly_index_autumn_clock_change():
+    efa_date = EFADay("2022-10-30")
+    result = efa_date.start_time_index("60min")
+    assert result[0] == pd.Timestamp("2022-10-29 22:00:00", tz="UTC")
+    assert result[-1] == pd.Timestamp("2022-10-30 22:00:00", tz="UTC")
+    assert len(result) == 25
+    assert result.is_monotonic_increasing
+
+
+def test_half_hourly_index_winter():
+    efa_date = EFADay("2022-01-01")
+    result = efa_date.start_time_index("30min")
+    assert result[0] == pd.Timestamp("2021-12-31 23:00:00", tz="UTC")
+    assert result[-1] == pd.Timestamp("2022-01-01 22:30:00", tz="UTC")
+    assert len(result) == 48
+    assert result.is_monotonic_increasing
