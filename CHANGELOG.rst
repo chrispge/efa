@@ -18,6 +18,21 @@ Changed
 Fixed
 ~~~~~
 
+
+0.2.2 - 2024-09-06
+------------------
+
+Added
+~~~~~
+
+- EfaDay.start_time_index 
+
+Changed
+~~~~~~~
+
+Fixed
+~~~~~
+
 - ensure helpers.sp_from_timestamp returns int for settlement period value
 
 
