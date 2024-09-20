@@ -3,8 +3,7 @@ import datetime as dt
 import pandas as pd
 import pytest
 
-from efa.efablock import EFABlock
-from efa.efaday import EFADay
+from efa import EFABlock, EFADay
 
 
 # Test EFABlock creation

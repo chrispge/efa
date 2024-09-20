@@ -18,6 +18,20 @@ Changed
 Fixed
 ~~~~~
 
+0.2.5 - 2024-09-20
+------------------
+
+Added
+~~~~~
+
+Changed
+~~~~~~~
+
+Fixed
+~~~~~
+
+- allow import of EFABlock from efa
+
 0.2.4 - 2024-09-20
 ------------------
 
