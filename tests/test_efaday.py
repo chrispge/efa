@@ -312,47 +312,47 @@ def test__add__non_int():
         efa_date + 3.14
 
 
-def test_from_period_start_time_winter():
+def test_from_start_time_winter():
     start_time = dt.datetime(2022, 1, 1, 0, 0, 0, tzinfo=dt.timezone.utc)
-    result = EFADay.from_period_start_time(start_time)
+    result = EFADay.from_start_time(start_time)
     assert result == EFADay("2022-01-01")
 
     start_time = dt.datetime(2022, 1, 1, 1, 0, 0, tzinfo=dt.timezone.utc)
-    result = EFADay.from_period_start_time(start_time)
+    result = EFADay.from_start_time(start_time)
     assert result == EFADay("2022-01-01")
 
     start_time = dt.datetime(2022, 1, 1, 16, 0, 0, tzinfo=dt.timezone.utc)
-    result = EFADay.from_period_start_time(start_time)
+    result = EFADay.from_start_time(start_time)
     assert result == EFADay("2022-01-01")
 
     start_time = dt.datetime(2022, 1, 1, 23, 0, 0, tzinfo=dt.timezone.utc)
-    result = EFADay.from_period_start_time(start_time)
+    result = EFADay.from_start_time(start_time)
     assert result == EFADay("2022-01-02")
 
     start_time = dt.datetime(2022, 1, 1, 23, 30, 0, tzinfo=dt.timezone.utc)
-    result = EFADay.from_period_start_time(start_time)
+    result = EFADay.from_start_time(start_time)
     assert result == EFADay("2022-01-02")
 
 
-def test_from_period_start_time_summer():
+def test_from_start_time_summer():
     start_time = dt.datetime(2022, 6, 1, 0, 0, 0, tzinfo=dt.timezone.utc)
-    result = EFADay.from_period_start_time(start_time)
+    result = EFADay.from_start_time(start_time)
     assert result == EFADay("2022-06-01")
 
     start_time = dt.datetime(2022, 6, 1, 1, 0, 0, tzinfo=dt.timezone.utc)
-    result = EFADay.from_period_start_time(start_time)
+    result = EFADay.from_start_time(start_time)
     assert result == EFADay("2022-06-01")
 
     start_time = dt.datetime(2022, 6, 1, 21, 0, 0, tzinfo=dt.timezone.utc)
-    result = EFADay.from_period_start_time(start_time)
+    result = EFADay.from_start_time(start_time)
     assert result == EFADay("2022-06-01")
 
     start_time = dt.datetime(2022, 6, 1, 22, 0, 0, tzinfo=dt.timezone.utc)
-    result = EFADay.from_period_start_time(start_time)
+    result = EFADay.from_start_time(start_time)
     assert result == EFADay("2022-06-02")
 
     start_time = dt.datetime(2022, 6, 1, 23, 0, 0, tzinfo=dt.timezone.utc)
-    result = EFADay.from_period_start_time(start_time)
+    result = EFADay.from_start_time(start_time)
     assert result == EFADay("2022-06-02")
 
 
