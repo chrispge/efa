@@ -18,6 +18,20 @@ Changed
 Fixed
 ~~~~~
 
+0.2.4 - 2024-09-20
+------------------
+
+Added
+~~~~~
+
+- EFABlock class
+
+Changed
+~~~~~~~
+
+Fixed
+~~~~~
+
 0.2.3 - 2024-09-20
 ------------------
 
@@ -38,7 +52,7 @@ Fixed
 Added
 ~~~~~
 
-- EfaDay.start_time_index 
+- EfaDay.start_time_index
 
 Changed
 ~~~~~~~
