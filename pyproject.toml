@@ -9,6 +9,7 @@ readme = "README.rst"
 python = ">3.8"
 pytest = ">7.2.0"
 pandas = ">1.5.2"
+deprecated = "^1.2.14"
 
 
 [build-system]

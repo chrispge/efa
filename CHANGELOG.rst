@@ -18,6 +18,8 @@ Changed
 Fixed
 ~~~~~
 
+- use consistent func name from_start_time
+
 0.2.5 - 2024-09-20
 ------------------
 

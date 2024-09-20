@@ -139,6 +139,294 @@ def test_summer_block_6():
     assert block.name == "WE6"
 
 
+# Test dunders
+
+
+def test__str__():
+    # Create an EFADay object
+    efa_block = EFABlock("2022-01-01", 1)
+
+    assert str(efa_block) == "2022-01-01 WE1"
+
+
+def test__repr__():
+    efa_block = EFABlock("2022-01-01", 1)
+
+    assert repr(efa_block) == "EFABlock('2022-01-01', 1)"
+    assert eval(repr(efa_block)) == efa_block
+
+
+def test__eq__():
+    efa_block1 = EFABlock("2022-01-01", 3)
+    efa_block2 = EFABlock("2022-01-01", 3)
+
+    assert efa_block1 == efa_block2
+
+
+def test_not__eq__():
+    efa_block1 = EFABlock("2022-01-01", 3)
+    efa_block2 = EFABlock("2022-01-01", 4)
+
+    assert efa_block1 != efa_block2
+
+
+def test__ne__():
+    efa_block1 = EFABlock("2022-01-01", 3)
+    efa_block2 = EFABlock("2022-01-01", 4)
+
+    assert efa_block1 != efa_block2
+
+
+def test_not__ne__():
+    efa_block1 = EFABlock("2022-01-01", 3)
+    efa_block2 = EFABlock("2022-01-01", 3)
+
+    assert not efa_block1 != efa_block2
+
+
+def test__lt__():
+    efa_block1 = EFABlock("2022-01-01", 3)
+    efa_block2 = EFABlock("2022-01-01", 4)
+
+    assert efa_block1 < efa_block2
+
+
+def test_not__lt__():
+    efa_block1 = EFABlock("2022-01-01", 4)
+    efa_block2 = EFABlock("2022-01-01", 4)
+
+    assert not efa_block1 < efa_block2
+
+
+def test__le__():
+    # Create two EFADay objects with the same date
+    efa_day1 = EFADay("2022-01-01")
+    efa_day2 = EFADay("2022-01-01")
+
+    assert efa_day1 <= efa_day2
+
+
+def test_not__le__():
+    efa_block1 = EFABlock("2022-01-01", 4)
+    efa_block2 = EFABlock("2022-01-01", 4)
+
+    assert efa_block1 <= efa_block2
+
+
+def test__gt__():
+    efa_block1 = EFABlock("2022-01-01", 4)
+    efa_block2 = EFABlock("2022-01-01", 3)
+
+    assert efa_block1 > efa_block2
+
+
+def test_not__gt__():
+    efa_block1 = EFABlock("2022-01-01", 4)
+    efa_block2 = EFABlock("2022-01-01", 4)
+
+    assert not efa_block1 > efa_block2
+
+
+def test__ge__():
+    efa_block1 = EFABlock("2022-01-01", 3)
+    efa_block2 = EFABlock("2022-01-01", 4)
+
+    assert not efa_block1 >= efa_block2
+
+
+def test_not__ge__():
+    efa_block1 = EFABlock("2022-01-01", 3)
+    efa_block2 = EFABlock("2022-01-01", 4)
+
+    assert not efa_block1 >= efa_block2
+
+
+def test__hash__():
+    efa_block1 = EFABlock("2022-01-01", 4)
+    efa_block2 = EFABlock("2022-01-01", 4)
+
+    assert hash(efa_block1) == hash(efa_block2)
+
+
+def test_not__hash__():
+    efa_block1 = EFABlock("2022-01-01", 3)
+    efa_block2 = EFABlock("2022-01-01", 4)
+
+    assert hash(efa_block1) != hash(efa_block2)
+
+
+def test__add__():
+    efa_block = EFABlock("2022-01-01", 1)
+    result = efa_block + 1
+    assert result == EFABlock("2022-01-01", 2)
+
+    efa_block = EFABlock("2022-01-01", 1)
+    result = efa_block + 2
+    assert result == EFABlock("2022-01-01", 3)
+
+    efa_block = EFABlock("2022-01-01", 1)
+    result = efa_block + 6
+    assert result == EFABlock("2022-01-02", 1)
+
+
+def test__sub__():
+    efa_block = EFABlock("2022-01-01", 1)
+    result = efa_block - 1
+    assert result == EFABlock("2021-12-31", 6)
+
+
+def test_start_time_winter_day():
+    # Create an EFADay object for a winter day
+    efa_day = EFADay("2022-01-01")
+
+    assert efa_day.start_time == dt.datetime(
+        2021, 12, 31, 23, 0, 0, tzinfo=dt.timezone.utc
+    )
+
+
+def test_start_time_summer_day():
+    # Create an EFADay object for a summer day
+    efa_day = EFADay("2022-07-01")
+
+    assert efa_day.start_time == dt.datetime(
+        2022, 6, 30, 22, 0, 0, tzinfo=dt.timezone.utc
+    )
+
+
+def test_start_time_winter_clock_change_day():
+    # Create an EFADay object for a day when the clock changes
+    efa_day = EFADay("2022-10-30")
+
+    assert efa_day.start_time == dt.datetime(
+        2022, 10, 29, 22, 0, 0, tzinfo=dt.timezone.utc
+    )
+
+
+def test_start_time_summer_clock_change_day():
+    # Create an EFADay object for a day when the clock changes
+    efa_day = EFADay("2022-03-27")
+
+    assert efa_day.start_time == dt.datetime(
+        2022, 3, 26, 23, 0, 0, tzinfo=dt.timezone.utc
+    )
+
+
+def test_end_time_winter_day():
+    # Create an EFADay object for a winter day
+    efa_day = EFADay("2022-01-01")
+
+    assert efa_day.end_time == dt.datetime(2022, 1, 1, 23, 0, 0, tzinfo=dt.timezone.utc)
+
+
+def test_end_time_summer_day():
+    # Create an EFADay object for a summer day
+    efa_day = EFADay("2022-07-01")
+
+    assert efa_day.end_time == dt.datetime(2022, 7, 1, 22, 0, 0, tzinfo=dt.timezone.utc)
+
+
+def test_end_time_winter_clock_change_day():
+    # Create an EFADay object for a day when the clock changes
+    efa_day = EFADay("2022-10-30")
+
+    assert efa_day.end_time == dt.datetime(
+        2022, 10, 30, 23, 0, 0, tzinfo=dt.timezone.utc
+    )
+
+
+def test_end_time_summer_clock_change_day():
+    # Create an EFADay object for a day when the clock changes
+    efa_day = EFADay("2022-03-27")
+
+    assert efa_day.end_time == dt.datetime(
+        2022, 3, 27, 22, 0, 0, tzinfo=dt.timezone.utc
+    )
+
+
+# last SP start time
+
+
+def test_last_sp_start_time_winter_day():
+    # Create an EFADay object for a winter day
+    efa_day = EFADay("2022-01-01")
+
+    assert efa_day.last_sp_start_time == dt.datetime(
+        2022, 1, 1, 22, 30, 0, tzinfo=dt.timezone.utc
+    )
+
+
+def test_last_sp_start_time_summer_day():
+    # Create an EFADay object for a summer day
+    efa_day = EFADay("2022-07-01")
+
+    assert efa_day.last_sp_start_time == dt.datetime(
+        2022, 7, 1, 21, 30, 0, tzinfo=dt.timezone.utc
+    )
+
+
+def test_last_sp_start_time_winter_clock_change_day():
+    # Create an EFADay object for a day when the clock changes
+    efa_day = EFADay("2022-10-30")
+
+    assert efa_day.last_sp_start_time == dt.datetime(
+        2022, 10, 30, 22, 30, 0, tzinfo=dt.timezone.utc
+    )
+
+
+def test_last_sp_start_time_summer_clock_change_day():
+    # Create an EFADay object for a day when the clock changes
+    efa_day = EFADay("2022-03-27")
+
+    assert efa_day.last_sp_start_time == dt.datetime(
+        2022, 3, 27, 21, 30, 0, tzinfo=dt.timezone.utc
+    )
+
+
+# gas day
+def test_gas_day_winter():
+    # Create an EFADay object for a gas day
+    efa_day = EFADay("2022-01-01")
+
+    assert efa_day.gas_day == dt.datetime(2022, 1, 1, 6, 0, 0, tzinfo=dt.timezone.utc)
+
+
+def test_gas_day_summer():
+    # Create an EFADay object for a gas day
+    efa_day = EFADay("2022-06-01")
+
+    assert efa_day.gas_day == dt.datetime(2022, 6, 1, 5, 0, 0, tzinfo=dt.timezone.utc)
+
+
+def test_end_time_winter_clock_change_day():
+    efa_day = EFADay("2022-10-30")
+
+    assert efa_day.gas_day == dt.datetime(2022, 10, 30, 6, 0, 0, tzinfo=dt.timezone.utc)
+
+
+def test_end_time_summer_clock_change_day():
+    efa_day = EFADay("2022-03-27")
+
+    assert efa_day.gas_day == dt.datetime(2022, 3, 27, 5, 0, 0, tzinfo=dt.timezone.utc)
+
+
+def test__add__():
+    efa_date = EFADay("2022-01-01")
+    result = efa_date + 1
+    assert result == EFADay("2022-01-02")
+
+
+def test__sub__():
+    efa_date = EFADay("2022-01-01")
+    result = efa_date - 1
+    assert result == EFADay("2021-12-31")
+
+
+def test__add__non_int():
+    efa_date = EFADay("2022-01-01")
+    with pytest.raises(TypeError):
+        efa_date + 3.14
+
+
 # Test EFABlock creation from start_time
 
 

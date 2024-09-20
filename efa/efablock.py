@@ -8,7 +8,7 @@ class EFABlock:
 
     def __init__(self, efa_date: EFADay, num: int):
         self.efa_date = EFADay(efa_date)
-        self.delivery_date = efa_date.date
+        self.delivery_date = self.efa_date.date
         self.num = num
         self.start_time = self.efa_date.start_time + pd.Timedelta(
             hours=4 * (self.num - 1)
@@ -23,6 +23,58 @@ class EFABlock:
             return f"WD{self.num}"
         else:
             return f"WE{self.num}"
+
+    def __str__(self):
+        return f"{self.delivery_date} {self.name}"
+
+    def __repr__(self):
+        return f"EFABlock('{self.delivery_date}', {self.num})"
+
+    def __eq__(self, other):
+        return (self.efa_date == other.efa_date) & (self.num == other.num)
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __lt__(self, other):
+        return (self.efa_date < other.efa_date) | (
+            (self.efa_date == other.efa_date) & (self.num < other.num)
+        )
+
+    def __le__(self, other):
+        return self.__lt__(other) | self.__eq__(other)
+
+    def __gt__(self, other):
+        return (self.efa_date > other.efa_date) | (
+            (self.efa_date == other.efa_date) & (self.num > other.num)
+        )
+
+    def __ge__(self, other):
+        return self.__gt__(other) | self.__eq__(other)
+
+    def __hash__(self):
+        return hash((self.efa_date, self.num))
+
+    def __add__(self, blocks: int):
+        try:
+            assert isinstance(blocks, int)
+        except AssertionError:
+            raise TypeError(
+                "Only integer numbers of blocks can be added to an EFABlock object"
+            )
+
+        return EFABlock.from_start_time(
+            self.start_time + pd.Timedelta(hours=4 * blocks)
+        )
+
+    def __sub__(self, days: int):
+        try:
+            assert isinstance(days, int)
+        except AssertionError:
+            raise TypeError(
+                "Only integer numbers of blocks can be added to an EFABlock object"
+            )
+        return EFABlock.from_start_time(self.start_time - pd.Timedelta(days=4 * days))
 
     @property
     def is_peak(self):
