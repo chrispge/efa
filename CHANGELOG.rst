@@ -18,6 +18,20 @@ Changed
 Fixed
 ~~~~~
 
+0.2.6 - 2024-09-20
+~~~~~~~~~~~~~~~~~~
+
+Added
+~~~~~
+
+- EFABlock dunder methods
+
+Changed
+~~~~~~~
+
+Fixed
+~~~~~
+
 - use consistent func name from_start_time
 
 0.2.5 - 2024-09-20
