@@ -18,6 +18,20 @@ Changed
 Fixed
 ~~~~~
 
+0.2.8 - 2024-10-27
+~~~~~~~~~~~~~~~~~~
+
+Added
+~~~~~
+
+Changed
+~~~~~~~
+
+Fixed
+~~~~~
+
+- Use timestamp comparison in EfaDay.__eq__() to avoid pd warnings. 
+
 
 0.2.7 - 2024-10-27
 ~~~~~~~~~~~~~~~~~~
