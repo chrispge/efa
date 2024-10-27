@@ -18,6 +18,22 @@ Changed
 Fixed
 ~~~~~
 
+
+0.2.7 - 2024-10-27
+~~~~~~~~~~~~~~~~~~
+
+Added
+~~~~~
+
+Changed
+~~~~~~~
+
+Fixed
+~~~~~
+
+- Use from_start_time not from_period_start_time
+
+
 0.2.6 - 2024-09-20
 ~~~~~~~~~~~~~~~~~~
 
