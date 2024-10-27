@@ -99,7 +99,7 @@ class EFABlock:
         Will likely want a fully fledged EFABlock class but this will do for now.
         """
         _start_time = pd.Timestamp(start_time)
-        _efa_day = EFADay.from_period_start_time(_start_time)
+        _efa_day = EFADay.from_start_time(_start_time)
         assert _start_time.tzinfo is not None
         local_time = _start_time.astimezone("Europe/London")
         if local_time.hour < 3:
