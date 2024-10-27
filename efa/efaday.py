@@ -34,8 +34,12 @@ class EFADay:
         return f"EFADay('{self.date.strftime('%Y-%m-%d')}')"
 
     def __eq__(self, other):
+        # NB I use a comparison of Timestamps here to avoid the following warning:
+        # In a future version these will be considered non-comparable. Use 'ts == pd.Timestamp(date)' or 'ts.date() == date' instead.
         try:
-            return (self.date == other.date) & (self.__class__ == other.__class__)
+            return (pd.Timestamp(self.date) == pd.Timestamp(other.date)) & (
+                self.__class__ == other.__class__
+            )
         except AttributeError:
             return False
 
