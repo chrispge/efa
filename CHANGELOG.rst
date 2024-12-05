@@ -18,6 +18,30 @@ Changed
 Fixed
 ~~~~~
 
+
+0.2.9 - 2024-12-05
+~~~~~~~~~~~~~~~~~~
+
+
+Added
+~~~~~
+
+- funcs.get_efa_days(start_time, end_time)
+
+Changed
+~~~~~~~
+
+Fixed
+~~~~~
+ 
+- EFADay.from_start_time should be classmethdo
+
+
+
+
+
+
+
 0.2.8 - 2024-10-27
 ~~~~~~~~~~~~~~~~~~
 
