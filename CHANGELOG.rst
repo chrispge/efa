@@ -12,6 +12,8 @@ Unreleased
 Added
 ~~~~~
 
+- second test on get_efa_days
+
 Changed
 ~~~~~~~
 
