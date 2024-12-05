@@ -18,6 +18,22 @@ Changed
 Fixed
 ~~~~~
 
+0.2.10 - 2024-12-05
+~~~~~~~~~~~~~~~~~~
+
+
+Added
+~~~~~
+
+Changed
+~~~~~~~
+
+- allow import of get_efa_days directly from efa
+
+Fixed
+~~~~~
+ 
+
 
 0.2.9 - 2024-12-05
 ~~~~~~~~~~~~~~~~~~
