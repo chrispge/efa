@@ -1,13 +1,32 @@
 import datetime as dt
 from typing import Union
 
-import deprecated
 import pandas as pd
+from deprecated import deprecated
 
 from efa import helpers
 
 
 class EFADay:
+    @classmethod
+    @deprecated("Use from_start_time instead")
+    def from_period_start_time(cls, start_time: dt.datetime):
+        """Returns an EFA Day corresponding to a given utc start time."""
+        settlement_date, sp = helpers.sp_from_timestamp(start_time)
+        if sp <= 46:
+            return cls(settlement_date)
+        else:
+            return cls(settlement_date) + 1
+
+    @classmethod
+    def from_start_time(cls, start_time: dt.datetime):
+        """Returns an EFA Day corresponding to a given utc start time."""
+        settlement_date, sp = helpers.sp_from_timestamp(start_time)
+        if sp <= 46:
+            return cls(settlement_date)
+        else:
+            return cls(settlement_date) + 1
+
     def __init__(self, date: Union[dt.date, str]) -> None:
         """Initialises an EFADay object for a given date.
 
@@ -99,23 +118,6 @@ class EFADay:
     def gas_day(self) -> dt.datetime:
         """Returns the gas day bounday of the EFA day."""
         return self.end_time - dt.timedelta(hours=17)
-
-    @deprecated.deprecated("Use EFADay.from_start_time instead")
-    def from_period_start_time(start_time: dt.datetime):
-        """Returns an EFA Day corresponding to a given utc start time."""
-        settlement_date, sp = helpers.sp_from_timestamp(start_time)
-        if sp <= 46:
-            return EFADay(settlement_date)
-        else:
-            return EFADay(settlement_date) + 1
-
-    def from_start_time(start_time: dt.datetime):
-        """Returns an EFA Day corresponding to a given utc start time."""
-        settlement_date, sp = helpers.sp_from_timestamp(start_time)
-        if sp <= 46:
-            return EFADay(settlement_date)
-        else:
-            return EFADay(settlement_date) + 1
 
     def start_time_index(self, freq: str = "30min") -> pd.DatetimeIndex:
         """Returns the hourly index of the EFA day."""
