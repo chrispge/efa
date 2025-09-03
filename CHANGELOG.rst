@@ -12,6 +12,18 @@ Unreleased
 Added
 ~~~~~
 
+Changed
+~~~~~~~
+
+Fixed
+~~~~~
+
+0.2.11 - 2025-06-09
+~~~~~~~~~~~~~~~~~~~
+
+Added
+~~~~~
+
 - second test on get_efa_days
 
 Changed
@@ -19,6 +31,7 @@ Changed
 
 Fixed
 ~~~~~
+
 
 0.2.10 - 2024-12-05
 ~~~~~~~~~~~~~~~~~~

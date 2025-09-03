@@ -121,6 +121,7 @@ class EFADay:
 
     def start_time_index(self, freq: str = "30min") -> pd.DatetimeIndex:
         """Returns the hourly index of the EFA day."""
-        return pd.date_range(
-            self.start_time, self.end_time, freq=freq, inclusive="left"
+        return pd.Index(
+            pd.date_range(self.start_time, self.end_time, freq=freq, inclusive="left"),
+            name="start_time",
         )
