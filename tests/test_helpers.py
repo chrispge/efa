@@ -1734,3 +1734,19 @@ def test_sp_from_timstamp_dtypes():
 
     assert type(settlement_date) == dt.date
     assert type(settlement_period) == int
+
+
+def test_utc_from_sp_2024_05_30_SP2():
+    """Tests the UTC timestamp conversion for a specific settlement period."""
+    settlement_date = dt.date(2024, 5, 30)
+    settlement_period = 2
+    expected_utc = pd.Timestamp("2024-05-29T23:30:00+00")
+    assert helpers.utc_from_sp(settlement_date, settlement_period) == expected_utc
+
+
+def test_utc_from_sp_2024_05_29_SP48():
+    """Tests the UTC timestamp conversion for a specific settlement period."""
+    settlement_date = dt.date(2024, 5, 29)
+    settlement_period = 48
+    expected_utc = pd.Timestamp("2024-05-29T22:30:00+00")
+    assert helpers.utc_from_sp(settlement_date, settlement_period) == expected_utc

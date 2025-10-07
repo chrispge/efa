@@ -146,3 +146,31 @@ def sp_from_timestamps(timestamps: pd.Series) -> Tuple[pd.Series, pd.Series]:
     settlement_dates = settlement_dates.dt.tz_localize(None)
     settlement_periods = settlement_periods.astype(int)
     return settlement_dates, settlement_periods
+
+
+def efa_dates_from_timestamps(timestamps: pd.Series) -> pd.Series:
+    """Returns the EFA date for each timestamp in the input series
+
+    The EFA date is the date on which the EFA day starts. The EFA day starts at 23:00
+    on the previous calendar day and runs to 23:00 on the calendar day shown as the
+    EFA date.
+
+    Parameters
+    ----------
+
+    timestamps : pd.Series of timestamps
+
+    Returns
+    -------
+
+    pd.Series of EFA dates, each with the same index as the input
+
+    Warning:
+    --------
+    While you can use a DST Timezone like Europe/London, this could error on clock change days.
+    """
+    settlement_dates, settlement_periods = sp_from_timestamps(timestamps)
+    efa_dates = settlement_dates.where(
+        settlement_periods <= 46, settlement_dates + pd.Timedelta(days=1)
+    )
+    return efa_dates

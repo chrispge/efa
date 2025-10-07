@@ -399,3 +399,9 @@ def test_half_hourly_index_winter():
     assert result[-1] == pd.Timestamp("2022-01-01 22:30:00", tz="UTC")
     assert len(result) == 48
     assert result.is_monotonic_increasing
+
+
+def test_current_date():
+    efa_date = EFADay()
+    today = pd.Timestamp.utcnow().tz_convert("Europe/Paris").date()
+    assert efa_date.date == today

@@ -27,16 +27,18 @@ class EFADay:
         else:
             return cls(settlement_date) + 1
 
-    def __init__(self, date: Union[dt.date, str]) -> None:
+    def __init__(self, date: Union[dt.date, str] = None) -> None:
         """Initialises an EFADay object for a given date.
 
         Parameters
         ----------
 
         date : The date of the EFA day, either as a date object or string in the format
-        'YYYY-MM-DD'
+        'YYYY-MM-DD'. If None, determines the EFA day based on current UTC time.
 
         """
+        if date is None:
+            date = self._get_current_date()
         try:
             self.date = dt.datetime.strptime(date, "%Y-%m-%d").date()
         except TypeError:
@@ -125,3 +127,10 @@ class EFADay:
             pd.date_range(self.start_time, self.end_time, freq=freq, inclusive="left"),
             name="start_time",
         )
+
+    def _get_current_date(self):
+        utc_now = pd.Timestamp.utcnow()
+        # conti dates are an hour ahead and syncronised with London changes
+        # so easier to use those than add conditionals for 23:00 uk time
+        conti_now = utc_now.tz_convert("Europe/Paris")
+        return conti_now.date()
