@@ -401,6 +401,15 @@ def test_half_hourly_index_winter():
     assert result.is_monotonic_increasing
 
 
+def test_hourly_index_summer():
+    efa_date = EFADay("2022-06-01")
+    result = efa_date.start_time_index("60min", tz="Europe/London")
+    assert result[0] == pd.Timestamp("2022-05-31 23:00:00", tz="Europe/London")
+    assert result[-1] == pd.Timestamp("2022-06-01 22:00:00", tz="Europe/London")
+    assert len(result) == 24
+    assert result.is_monotonic_increasing
+
+
 def test_current_date():
     efa_date = EFADay()
     today = pd.Timestamp.utcnow().tz_convert("Europe/Paris").date()

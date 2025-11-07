@@ -121,10 +121,12 @@ class EFADay:
         """Returns the gas day bounday of the EFA day."""
         return self.end_time - dt.timedelta(hours=17)
 
-    def start_time_index(self, freq: str = "30min") -> pd.DatetimeIndex:
+    def start_time_index(self, freq: str = "30min", tz="utc") -> pd.DatetimeIndex:
         """Returns the hourly index of the EFA day."""
         return pd.Index(
-            pd.date_range(self.start_time, self.end_time, freq=freq, inclusive="left"),
+            pd.date_range(
+                self.start_time, self.end_time, freq=freq, inclusive="left"
+            ).tz_convert(tz),
             name="start_time",
         )
 
