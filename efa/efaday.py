@@ -128,6 +128,23 @@ class EFADay:
             name="start_time",
         )
 
+    def start_time_from_utc_str(self, utc_str):
+        """Returns a utc start_time from the utc_str e.g. '2300'"""
+        hh = int(utc_str[:2])
+        mm = int(utc_str[2:])
+        if hh >= self.start_time.hour:
+            base_date = self.date - dt.timedelta(days=1)
+        else:
+            base_date = self.date
+        return dt.datetime(
+            year=base_date.year,
+            month=base_date.month,
+            day=base_date.day,
+            hour=hh,
+            minute=mm,
+            tzinfo=dt.timezone.utc,
+        )
+
     def _get_current_date(self):
         utc_now = pd.Timestamp.utcnow()
         # conti dates are an hour ahead and syncronised with London changes

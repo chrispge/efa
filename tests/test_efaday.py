@@ -405,3 +405,29 @@ def test_current_date():
     efa_date = EFADay()
     today = pd.Timestamp.utcnow().tz_convert("Europe/Paris").date()
     assert efa_date.date == today
+
+
+def test_start_time_from_utc_str():
+    efa_date = EFADay("2022-01-01")
+    utc_str = "2300"
+    result = efa_date.start_time_from_utc_str(utc_str)
+    print(result)
+    assert result == pd.Timestamp("2021-12-31 23:00:00+00")
+    utc_str = "0000"
+    result = efa_date.start_time_from_utc_str(utc_str)
+    print(result)
+    assert result == pd.Timestamp("2022-01-01 00:00:00+00")
+
+
+def test_start_time_from_utc_str_summer():
+    efa_date = EFADay("2022-06-01")
+    utc_str = "2200"
+    result = efa_date.start_time_from_utc_str(utc_str)
+    print(result)
+    assert result == pd.Timestamp("2022-05-31 22:00:00+00")
+    utc_str = "2300"
+    result = efa_date.start_time_from_utc_str(utc_str)
+    assert result == pd.Timestamp("2022-05-31 23:00:00+00")
+    utc_str = "0000"
+    result = efa_date.start_time_from_utc_str(utc_str)
+    assert result == pd.Timestamp("2022-06-01 00:00:00+00")
