@@ -121,6 +121,28 @@ class EFADay:
         """Returns the gas day bounday of the EFA day."""
         return self.end_time - dt.timedelta(hours=17)
 
+    @property
+    def year(self) -> int:
+        return self.end_time.year
+
+    @property
+    def month(self) -> int:
+        return self.end_time.month
+
+    @property
+    def day(self) -> int:
+        return self.end_time.day
+
+    @property
+    def year_start(self) -> pd.Timestamp:
+        start_date = dt.date(self.year, 1, 1).strftime("%Y-%m-%d")
+        return EFADay(start_date).start_time
+
+    @property
+    def year_end(self) -> pd.Timestamp:
+        end_date = dt.date(self.year + 1, 1, 1).strftime("%Y-%m-%d")
+        return EFADay(end_date).start_time
+
     def start_time_index(self, freq: str = "30min", tz="utc") -> pd.DatetimeIndex:
         """Returns the hourly index of the EFA day."""
         return pd.Index(
