@@ -2,6 +2,7 @@ import datetime as dt
 from typing import Union
 
 import pandas as pd
+from dateutil.relativedelta import relativedelta
 from deprecated import deprecated
 
 from efa import helpers
@@ -134,14 +135,22 @@ class EFADay:
         return self.end_time.day
 
     @property
+    def month_start(self) -> pd.Timestamp:
+        start_date = dt.date(self.year, self.month, 1).strftime("%Y-%m-%d")
+        return EFADay(start_date).start_time
+
+    @property
+    def month_end(self) -> pd.Timestamp:
+        return self.month_start + relativedelta(months=1)
+
+    @property
     def year_start(self) -> pd.Timestamp:
         start_date = dt.date(self.year, 1, 1).strftime("%Y-%m-%d")
         return EFADay(start_date).start_time
 
     @property
     def year_end(self) -> pd.Timestamp:
-        end_date = dt.date(self.year + 1, 1, 1).strftime("%Y-%m-%d")
-        return EFADay(end_date).start_time
+        return self.year_start + relativedelta(years=1)
 
     def start_time_index(self, freq: str = "30min", tz="utc") -> pd.DatetimeIndex:
         """Returns the hourly index of the EFA day."""
