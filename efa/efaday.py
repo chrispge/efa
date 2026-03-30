@@ -1,5 +1,6 @@
 import datetime as dt
 from typing import Union
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 from dateutil.relativedelta import relativedelta
@@ -184,3 +185,29 @@ class EFADay:
         # so easier to use those than add conditionals for 23:00 uk time
         conti_now = utc_now.tz_convert("Europe/Paris")
         return conti_now.date()
+
+    def make_hh_options(self):
+        london = ZoneInfo("Europe/London")
+
+        utc_times = list(self.start_time_index())
+        gb_times = [t.astimezone(london) for t in utc_times]
+
+        # First pass: plain HH:MM labels
+        labels = [t.strftime("%H:%M") for t in gb_times]
+
+        # Find duplicates (only happens on DST fallback day)
+        duplicates = {l for l in labels if labels.count(l) > 1}
+
+        options = []
+        for utc_dt, gb_dt, label in zip(utc_times, gb_times, labels):
+            if label in duplicates:
+                label = gb_dt.strftime("%H:%M (%Z)")
+
+            options.append(
+                {
+                    "label": label,
+                    "value": utc_dt.isoformat(),
+                }
+            )
+
+        return options
