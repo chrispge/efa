@@ -12,7 +12,7 @@ from efa import helpers
 class EFADay:
     @classmethod
     @deprecated("Use from_start_time instead")
-    def from_period_start_time(cls, start_time: dt.datetime):
+    def from_period_start_time(cls, start_time: dt.datetime) -> "EFADay":
         """Returns an EFA Day corresponding to a given utc start time."""
         settlement_date, sp = helpers.sp_from_timestamp(start_time)
         if sp <= 46:
@@ -21,7 +21,7 @@ class EFADay:
             return cls(settlement_date) + 1
 
     @classmethod
-    def from_start_time(cls, start_time: dt.datetime):
+    def from_start_time(cls, start_time: dt.datetime) -> "EFADay":
         """Returns an EFA Day corresponding to a given utc start time."""
         settlement_date, sp = helpers.sp_from_timestamp(start_time)
         if sp <= 46:
@@ -99,7 +99,7 @@ class EFADay:
         return EFADay(self.date - dt.timedelta(days=days))
 
     @property
-    def start_time(self) -> dt.datetime:
+    def start_time(self) -> pd.Timestamp:
         """Returns UTC start time of the EFA day."""
         _prev_date = self.date - dt.timedelta(days=1)
         max_sp = helpers.max_sp(_prev_date)
@@ -107,19 +107,19 @@ class EFADay:
         return start_time
 
     @property
-    def end_time(self) -> dt.datetime:
+    def end_time(self) -> pd.Timestamp:
         """Returns UTC end time of the EFA day."""
         max_sp = helpers.max_sp(self.date)
         end_time = helpers.utc_from_sp(self.date, max_sp - 1)
         return end_time
 
     @property
-    def last_sp_start_time(self) -> dt.datetime:
+    def last_sp_start_time(self) -> pd.Timestamp:
         """Returns the last start time of the EFA day i.e. 22:30 local time"""
         return self.end_time - dt.timedelta(minutes=30)
 
     @property
-    def gas_day(self) -> dt.datetime:
+    def gas_day(self) -> pd.Timestamp:
         """Returns the gas day bounday of the EFA day."""
         return self.end_time - dt.timedelta(hours=17)
 
@@ -153,7 +153,9 @@ class EFADay:
     def year_end(self) -> pd.Timestamp:
         return self.year_start + relativedelta(years=1)
 
-    def start_time_index(self, freq: str = "30min", tz="utc") -> pd.DatetimeIndex:
+    def start_time_index(
+        self, freq: str = "30min", tz: str = "utc"
+    ) -> pd.DatetimeIndex:
         """Returns the hourly index of the EFA day."""
         return pd.Index(
             pd.date_range(
@@ -162,7 +164,7 @@ class EFADay:
             name="start_time",
         )
 
-    def start_time_from_utc_str(self, utc_str):
+    def start_time_from_utc_str(self, utc_str) -> dt.datetime:
         """Returns a utc start_time from the utc_str e.g. '2300'"""
         hh = int(utc_str[:2])
         mm = int(utc_str[2:])
@@ -179,14 +181,14 @@ class EFADay:
             tzinfo=dt.timezone.utc,
         )
 
-    def _get_current_date(self):
+    def _get_current_date(self) -> dt.date:
         utc_now = pd.Timestamp.utcnow()
         # conti dates are an hour ahead and syncronised with London changes
         # so easier to use those than add conditionals for 23:00 uk time
         conti_now = utc_now.tz_convert("Europe/Paris")
         return conti_now.date()
 
-    def efa_sp_from_utc(self, start_time):
+    def efa_sp_from_utc(self, start_time) -> int:
         """Returns efa_sp from utc_start_time 1-48 (50)
 
         This is a 1-based count from the 2300 start time
@@ -197,13 +199,13 @@ class EFADay:
             raise ValueError(
                 f"start_time {start_time} for efa_sp_from_utc must be in efa day range for date {self}"
             )
-        return (start_time - self.start_time).total_seconds() // 1800 + 1
+        return int((start_time - self.start_time).total_seconds() // 1800 + 1)
 
     @property
-    def max_efa_sp(self):
+    def max_efa_sp(self) -> int:
         return self.efa_sp_from_utc(self.last_sp_start_time)
 
-    def utc_from_efa_sp(self, efa_sp: int):
+    def utc_from_efa_sp(self, efa_sp: int) -> pd.Timestamp:
         """Returns utc_start_time from efa_sp"""
         if not isinstance(efa_sp, int):
             raise ValueError(f"efa_sp must be an integer, not {efa_sp}")
@@ -214,7 +216,7 @@ class EFADay:
 
         return self.start_time + pd.Timedelta(minutes=30 * (efa_sp - 1))
 
-    def make_hh_options(self):
+    def make_hh_options(self) -> list[dict[str, Union[str, int]]]:
         london = ZoneInfo("Europe/London")
 
         utc_times = list(self.start_time_index())
@@ -234,7 +236,7 @@ class EFADay:
             options.append(
                 {
                     "label": label,
-                    "value": int(self.efa_sp_from_utc(utc_dt)),
+                    "value": self.efa_sp_from_utc(utc_dt),
                 }
             )
 
