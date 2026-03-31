@@ -234,7 +234,7 @@ class EFADay:
             options.append(
                 {
                     "label": label,
-                    "value": utc_dt.isoformat(),
+                    "value": int(self.efa_sp_from_utc(utc_dt)),
                 }
             )
 
