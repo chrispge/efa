@@ -1,3 +1,4 @@
+import calendar
 import datetime as dt
 from typing import Union
 from zoneinfo import ZoneInfo
@@ -142,7 +143,10 @@ class EFADay:
 
     @property
     def month_end(self) -> pd.Timestamp:
-        return self.month_start + relativedelta(months=1)
+        _, last_day = calendar.monthrange(self.year, self.month)
+        return pd.Timestamp(
+            year=self.year, month=self.month, day=last_day, hour=23, tz="Europe/London"
+        ).tz_convert("UTC")
 
     @property
     def year_start(self) -> pd.Timestamp:

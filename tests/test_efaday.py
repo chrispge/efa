@@ -723,3 +723,15 @@ def test_make_hh_options_long_day():
         {"label": "22:00", "value": "49"},
         {"label": "22:30", "value": "50"},
     ]
+
+
+def test_month_start_end():
+    jan = EFADay("2026-01-09")
+    assert jan.month_start == pd.Timestamp("2025-12-31 23:00:00+00")
+    assert jan.month_end == pd.Timestamp("2026-01-31 23:00:00+00")
+    feb = EFADay("2026-02-19")
+    assert feb.month_start == pd.Timestamp("2026-01-31 23:00:00+00")
+    assert feb.month_end == pd.Timestamp("2026-02-28 23:00:00+00")
+    mar = EFADay("2026-03-29")
+    assert mar.month_start == pd.Timestamp("2026-02-28 23:00:00+00")
+    assert mar.month_end == pd.Timestamp("2026-03-31 22:00:00+00")
