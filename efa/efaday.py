@@ -216,7 +216,7 @@ class EFADay:
 
         return self.start_time + pd.Timedelta(minutes=30 * (efa_sp - 1))
 
-    def make_hh_options(self) -> list[dict[str, Union[str, int]]]:
+    def make_hh_options(self) -> list[dict[str, str]]:
         london = ZoneInfo("Europe/London")
 
         utc_times = list(self.start_time_index())
@@ -236,7 +236,7 @@ class EFADay:
             options.append(
                 {
                     "label": label,
-                    "value": self.efa_sp_from_utc(utc_dt),
+                    "value": f"{self.efa_sp_from_utc(utc_dt):02d}",
                 }
             )
 
