@@ -199,6 +199,21 @@ class EFADay:
             )
         return (start_time - self.start_time).total_seconds() // 1800 + 1
 
+    @property
+    def max_efa_sp(self):
+        return self.efa_sp_from_utc(self.last_sp_start_time)
+
+    def utc_from_efa_sp(self, efa_sp: int):
+        """Returns utc_start_time from efa_sp"""
+        if not isinstance(efa_sp, int):
+            raise ValueError(f"efa_sp must be an integer, not {efa_sp}")
+        if (efa_sp < 1) or (efa_sp > self.max_efa_sp):
+            raise ValueError(
+                f"efa_sp for {self} must be integer in range 1 to {self.max_efa_sp}."
+            )
+
+        return self.start_time + pd.Timedelta(minutes=30 * (efa_sp - 1))
+
     def make_hh_options(self):
         london = ZoneInfo("Europe/London")
 

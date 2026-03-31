@@ -480,6 +480,25 @@ def test_efa_sp_from_utc_bad_time():
         efa_date.efa_sp_from_utc(start_time)
 
 
+def test_utc_from_efa_sp():
+    efa_date = EFADay("2026-01-01")
+    assert efa_date.utc_from_efa_sp(1) == pd.Timestamp("2025-12-31 23:00:00+00")
+    assert efa_date.utc_from_efa_sp(48) == pd.Timestamp("2026-01-01 22:30:00+00")
+    long_date = EFADay("2025-10-26")
+    assert long_date.utc_from_efa_sp(1) == pd.Timestamp("2025-10-25 22:00:00+00")
+    assert long_date.utc_from_efa_sp(50) == pd.Timestamp("2025-10-26 22:30:00+00")
+
+
+def test_utc_from_efa_sp_bad_sp():
+    efa_date = EFADay("2026-01-01")
+    with pytest.raises(ValueError):
+        efa_date.utc_from_efa_sp(0)
+    with pytest.raises(ValueError):
+        efa_date.utc_from_efa_sp(49)
+    with pytest.raises(ValueError):
+        efa_date.utc_from_efa_sp(1.5)
+
+
 def test_make_hh_options_winter_day():
     efa_date = EFADay("2026-01-01")
     result = efa_date.make_hh_options()
