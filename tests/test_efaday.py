@@ -442,6 +442,44 @@ def test_start_time_from_utc_str_summer():
     assert result == pd.Timestamp("2022-06-01 00:00:00+00")
 
 
+def test_efa_sp_from_utc():
+    """Test EFA SP (not real SP) calculation"""
+    efa_date = EFADay("2026-01-01")
+    start_time = pd.Timestamp("2025-12-31 23:00:00+00")
+    assert efa_date.efa_sp_from_utc(start_time) == 1
+    start_time = pd.Timestamp("2026-01-01 22:30:00+00")
+    assert efa_date.efa_sp_from_utc(start_time) == 48
+
+    long_date = EFADay("2025-10-26")
+    start_time = pd.Timestamp("2025-10-25 22:00:00+00")
+    assert long_date.efa_sp_from_utc(start_time) == 1
+    start_time = pd.Timestamp("2025-10-26 22:30:00+00")
+    assert long_date.efa_sp_from_utc(start_time) == 50
+
+
+def test_efa_sp_from_utc_bad_time():
+    efa_date = EFADay("2026-01-01")
+    start_time = pd.Timestamp("2025-12-31 22:59:00+00")
+    with pytest.raises(ValueError):
+        efa_date.efa_sp_from_utc(start_time)
+    start_time = pd.Timestamp("2025-01-01 23:01:00+00")
+    with pytest.raises(ValueError):
+        efa_date.efa_sp_from_utc(start_time)
+
+
+def test_efa_sp_from_utc_non_hh_time():
+    efa_date = EFADay("2026-01-01")
+    start_time = pd.Timestamp("2026-01-01 00:17:00+00")
+    assert efa_date.efa_sp_from_utc(start_time) == 3
+
+
+def test_efa_sp_from_utc_bad_time():
+    efa_date = EFADay("2026-01-01")
+    start_time = pd.Timestamp("2024-12-31 23:00:00+00")
+    with pytest.raises(ValueError):
+        efa_date.efa_sp_from_utc(start_time)
+
+
 def test_make_hh_options_winter_day():
     efa_date = EFADay("2026-01-01")
     result = efa_date.make_hh_options()

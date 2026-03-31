@@ -186,6 +186,19 @@ class EFADay:
         conti_now = utc_now.tz_convert("Europe/Paris")
         return conti_now.date()
 
+    def efa_sp_from_utc(self, start_time):
+        """Returns efa_sp from utc_start_time 1-48 (50)
+
+        This is a 1-based count from the 2300 start time
+        not the conventional settlement period.
+
+        """
+        if (start_time < self.start_time) or (start_time >= self.end_time):
+            raise ValueError(
+                f"start_time {start_time} for efa_sp_from_utc must be in efa day range for date {self}"
+            )
+        return (start_time - self.start_time).total_seconds() // 1800 + 1
+
     def make_hh_options(self):
         london = ZoneInfo("Europe/London")
 
