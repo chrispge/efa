@@ -717,3 +717,17 @@ def test_summer_23():
     summer_date = pd.Timestamp("2021-06-01 23:00:00+00:00")
     result = EFABlock.from_start_time(summer_date)
     assert result.num == 1
+
+
+def test_long_day_last_hour_block_6():
+    # 22:30 GMT on the long day is still in EFA day 2026-10-25
+    start_time = pd.Timestamp("2026-10-25 22:30:00+00:00")
+    result = EFABlock.from_start_time(start_time)
+    assert result == EFABlock(EFADay("2026-10-25"), 6)
+
+
+def test_short_day_last_hour_block_1():
+    # 23:30 BST on the short day is already EFA day 2026-03-30
+    start_time = pd.Timestamp("2026-03-29 22:30:00+00:00")
+    result = EFABlock.from_start_time(start_time)
+    assert result == EFABlock(EFADay("2026-03-30"), 1)

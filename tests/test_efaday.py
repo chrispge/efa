@@ -735,3 +735,59 @@ def test_month_start_end():
     mar = EFADay("2026-03-29")
     assert mar.month_start == pd.Timestamp("2026-02-28 23:00:00+00")
     assert mar.month_end == pd.Timestamp("2026-03-31 22:00:00+00")
+
+
+@pytest.mark.parametrize(
+    "date", ["2025-03-30", "2025-10-26", "2026-03-29", "2026-10-25", "2026-06-01"]
+)
+def test_from_start_time_agrees_with_start_and_end_time(date):
+    # every SP of the day maps back to the day, and the SPs either side do not
+    efa_date = EFADay(date)
+    sps = pd.date_range(
+        efa_date.start_time, efa_date.end_time, freq="30min", inclusive="left"
+    )
+    assert len(sps) == efa_date.max_efa_sp
+    for start_time in sps:
+        assert EFADay.from_start_time(start_time) == efa_date
+    before = efa_date.start_time - pd.Timedelta(minutes=30)
+    assert EFADay.from_start_time(before) == efa_date - 1
+    assert EFADay.from_start_time(efa_date.end_time) == efa_date + 1
+
+
+def test_from_start_time_long_day():
+    start_time = dt.datetime(2026, 10, 25, 21, 30, 0, tzinfo=dt.timezone.utc)
+    result = EFADay.from_start_time(start_time)
+    assert result == EFADay("2026-10-25")
+
+    start_time = dt.datetime(2026, 10, 25, 22, 0, 0, tzinfo=dt.timezone.utc)
+    result = EFADay.from_start_time(start_time)
+    assert result == EFADay("2026-10-25")
+
+    start_time = dt.datetime(2026, 10, 25, 22, 30, 0, tzinfo=dt.timezone.utc)
+    result = EFADay.from_start_time(start_time)
+    assert result == EFADay("2026-10-25")
+
+    start_time = dt.datetime(2026, 10, 25, 23, 0, 0, tzinfo=dt.timezone.utc)
+    result = EFADay.from_start_time(start_time)
+    assert result == EFADay("2026-10-26")
+
+
+def test_from_start_time_short_day():
+    start_time = dt.datetime(2026, 3, 29, 21, 30, 0, tzinfo=dt.timezone.utc)
+    result = EFADay.from_start_time(start_time)
+    assert result == EFADay("2026-03-29")
+
+    start_time = dt.datetime(2026, 3, 29, 22, 0, 0, tzinfo=dt.timezone.utc)
+    result = EFADay.from_start_time(start_time)
+    assert result == EFADay("2026-03-30")
+
+    start_time = dt.datetime(2026, 3, 29, 22, 30, 0, tzinfo=dt.timezone.utc)
+    result = EFADay.from_start_time(start_time)
+    assert result == EFADay("2026-03-30")
+
+
+def test_from_period_start_time_long_day():
+    start_time = dt.datetime(2026, 10, 25, 22, 30, 0, tzinfo=dt.timezone.utc)
+    with pytest.deprecated_call():
+        result = EFADay.from_period_start_time(start_time)
+    assert result == EFADay("2026-10-25")

@@ -16,19 +16,25 @@ class EFADay:
     def from_period_start_time(cls, start_time: dt.datetime) -> "EFADay":
         """Returns an EFA Day corresponding to a given utc start time."""
         settlement_date, sp = helpers.sp_from_timestamp(start_time)
-        if sp <= 46:
-            return cls(settlement_date)
+        efa_day = cls(settlement_date)
+        # the EFA day ends 23:00 local, two SPs before the settlement day ends;
+        # SPs 1-44 are in-day on every day length, so skip max_efa_sp below 45
+        if sp <= 44 or sp <= efa_day.max_efa_sp - 2:
+            return efa_day
         else:
-            return cls(settlement_date) + 1
+            return efa_day + 1
 
     @classmethod
     def from_start_time(cls, start_time: dt.datetime) -> "EFADay":
         """Returns an EFA Day corresponding to a given utc start time."""
         settlement_date, sp = helpers.sp_from_timestamp(start_time)
-        if sp <= 46:
-            return cls(settlement_date)
+        efa_day = cls(settlement_date)
+        # the EFA day ends 23:00 local, two SPs before the settlement day ends;
+        # SPs 1-44 are in-day on every day length, so skip max_efa_sp below 45
+        if sp <= 44 or sp <= efa_day.max_efa_sp - 2:
+            return efa_day
         else:
-            return cls(settlement_date) + 1
+            return efa_day + 1
 
     def __init__(self, date: Union[dt.date, str] = None) -> None:
         """Initialises an EFADay object for a given date.
@@ -144,6 +150,7 @@ class EFADay:
     @property
     def month_end(self) -> pd.Timestamp:
         _, last_day = calendar.monthrange(self.year, self.month)
+        # NB do not use relativedelta here - it gave wrong results
         return pd.Timestamp(
             year=self.year, month=self.month, day=last_day, hour=23, tz="Europe/London"
         ).tz_convert("UTC")
