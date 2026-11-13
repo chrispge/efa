@@ -201,7 +201,9 @@ class EFADay(_CalendarDay):
         conti_now = utc_now.tz_convert("Europe/Paris")
         return conti_now.date()
 
-    @deprecated("Use index(Period.containing(start_time)) instead")
+    @deprecated(
+        "Use efa_day.index(Period.containing(start_time)) " "(from efa import Period)"
+    )
     def efa_sp_from_utc(self, start_time) -> int:
         """Returns efa_sp from utc_start_time 1-48 (50)
 
@@ -220,7 +222,10 @@ class EFADay(_CalendarDay):
     def max_efa_sp(self) -> int:
         return self.max_period
 
-    @deprecated("Use period(efa_period).start_time instead")
+    @deprecated(
+        "Use efa_day.period(efa_period).start_time, which returns a stdlib "
+        "datetime rather than a pd.Timestamp"
+    )
     def utc_from_efa_sp(self, efa_sp: int) -> pd.Timestamp:
         """Returns utc_start_time from efa_sp"""
         if not isinstance(efa_sp, int):
