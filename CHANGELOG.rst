@@ -11,9 +11,28 @@ Unreleased
 
 Added
 ~~~~~
+- ``Period``: one half hour, keyed on its UTC start instant, with its
+  settlement and EFA dates and period numbers as derived properties
+  (GC-1096). Stdlib only.
+- ``SettlementDay``: the settlement calendar's day (00:00 to 24:00 London),
+  sharing a base with ``EFADay``: ``periods``, ``index``, ``period(n)``,
+  ``max_period`` and ``period in day``.
+- Elexon settlement-pair fixture for 2026-03-29, 2026-07-15, 2026-10-25 and
+  2026-11-11.
 
 Changed
 ~~~~~~~
+- ``EFADay`` bounds come from the shared base: ``start_time`` 41.8 us to
+  under 1 us. Still returns ``pd.Timestamp`` (stdlib datetime in 0.4.0).
+- ``EFADay.from_start_time`` and ``from_period_start_time`` resolve through
+  ``Period.containing``; the settlement-period fix-up arithmetic is gone.
+
+Deprecated
+~~~~~~~~~~
+- ``EFADay.efa_sp_from_utc`` and ``utc_from_efa_sp``: use ``index`` and
+  ``period(n)``.
+- Naive input to ``EFADay.from_start_time`` (read as Europe/London); it will
+  raise in 0.4.0.
 
 Fixed
 ~~~~~

@@ -1,5 +1,6 @@
 import calendar
 import datetime as dt
+import warnings
 from typing import Union
 from zoneinfo import ZoneInfo
 
@@ -7,34 +8,39 @@ import pandas as pd
 from dateutil.relativedelta import relativedelta
 from deprecated import deprecated
 
-from efa import helpers
+from efa.period import LONDON, UTC, Period, _CalendarDay
 
 
-class EFADay:
+class EFADay(_CalendarDay):
     @classmethod
     @deprecated("Use from_start_time instead")
     def from_period_start_time(cls, start_time: dt.datetime) -> "EFADay":
         """Returns an EFA Day corresponding to a given utc start time."""
-        settlement_date, sp = helpers.sp_from_timestamp(start_time)
-        efa_day = cls(settlement_date)
-        # the EFA day ends 23:00 local, two SPs before the settlement day ends;
-        # SPs 1-44 are in-day on every day length, so skip max_efa_sp below 45
-        if sp <= 44 or sp <= efa_day.max_efa_sp - 2:
-            return efa_day
-        else:
-            return efa_day + 1
+        return cls.from_start_time(start_time)
 
     @classmethod
     def from_start_time(cls, start_time: dt.datetime) -> "EFADay":
-        """Returns an EFA Day corresponding to a given utc start time."""
-        settlement_date, sp = helpers.sp_from_timestamp(start_time)
-        efa_day = cls(settlement_date)
-        # the EFA day ends 23:00 local, two SPs before the settlement day ends;
-        # SPs 1-44 are in-day on every day length, so skip max_efa_sp below 45
-        if sp <= 44 or sp <= efa_day.max_efa_sp - 2:
-            return efa_day
-        else:
-            return efa_day + 1
+        """Returns the EFA Day containing a given start time.
+
+        Anything pandas reads as a timestamp is accepted. Naive input is read
+        as Europe/London, which is deprecated: it will raise in 0.4.0.
+        """
+        ts = pd.Timestamp(start_time)
+        if ts.tzinfo is None:
+            warnings.warn(
+                "naive start_time is read as Europe/London; pass a tz-aware "
+                "time (naive input will raise in efa 0.4.0)",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            ts = ts.tz_localize("Europe/London")
+        return cls(Period.containing(ts).efa_date)
+
+    @classmethod
+    def _start_of(cls, date: dt.date) -> dt.datetime:
+        """UTC start of EFA date `date`: 23:00 London the evening before."""
+        evening_before = date - dt.timedelta(days=1)
+        return dt.datetime.combine(evening_before, dt.time(23), LONDON).astimezone(UTC)
 
     def __init__(self, date: Union[dt.date, str] = None) -> None:
         """Initialises an EFADay object for a given date.
@@ -108,17 +114,13 @@ class EFADay:
     @property
     def start_time(self) -> pd.Timestamp:
         """Returns UTC start time of the EFA day."""
-        _prev_date = self.date - dt.timedelta(days=1)
-        max_sp = helpers.max_sp(_prev_date)
-        start_time = helpers.utc_from_sp(_prev_date, max_sp - 1)
-        return start_time
+        # pd.Timestamp until 0.4.0, which returns the stdlib datetime
+        return pd.Timestamp(self._start)
 
     @property
     def end_time(self) -> pd.Timestamp:
         """Returns UTC end time of the EFA day."""
-        max_sp = helpers.max_sp(self.date)
-        end_time = helpers.utc_from_sp(self.date, max_sp - 1)
-        return end_time
+        return pd.Timestamp(self._end)
 
     @property
     def last_sp_start_time(self) -> pd.Timestamp:
@@ -199,6 +201,7 @@ class EFADay:
         conti_now = utc_now.tz_convert("Europe/Paris")
         return conti_now.date()
 
+    @deprecated("Use index(Period.containing(start_time)) instead")
     def efa_sp_from_utc(self, start_time) -> int:
         """Returns efa_sp from utc_start_time 1-48 (50)
 
@@ -206,26 +209,27 @@ class EFADay:
         not the conventional settlement period.
 
         """
-        if (start_time < self.start_time) or (start_time >= self.end_time):
+        period = Period.containing(start_time)
+        if period not in self:
             raise ValueError(
                 f"start_time {start_time} for efa_sp_from_utc must be in efa day range for date {self}"
             )
-        return int((start_time - self.start_time).total_seconds() // 1800 + 1)
+        return self.index(period)
 
     @property
     def max_efa_sp(self) -> int:
-        return self.efa_sp_from_utc(self.last_sp_start_time)
+        return self.max_period
 
+    @deprecated("Use period(efa_period).start_time instead")
     def utc_from_efa_sp(self, efa_sp: int) -> pd.Timestamp:
         """Returns utc_start_time from efa_sp"""
         if not isinstance(efa_sp, int):
             raise ValueError(f"efa_sp must be an integer, not {efa_sp}")
-        if (efa_sp < 1) or (efa_sp > self.max_efa_sp):
+        if (efa_sp < 1) or (efa_sp > self.max_period):
             raise ValueError(
-                f"efa_sp for {self} must be integer in range 1 to {self.max_efa_sp}."
+                f"efa_sp for {self} must be integer in range 1 to {self.max_period}."
             )
-
-        return self.start_time + pd.Timedelta(minutes=30 * (efa_sp - 1))
+        return pd.Timestamp(self.period(efa_sp).start_time)
 
     def make_hh_options(self) -> list[dict[str, str]]:
         london = ZoneInfo("Europe/London")
@@ -247,7 +251,7 @@ class EFADay:
             options.append(
                 {
                     "label": label,
-                    "value": f"{self.efa_sp_from_utc(utc_dt):02d}",
+                    "value": f"{self.index(Period(utc_dt)):02d}",
                 }
             )
 
